@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+              http://www.springframework.org/schema/beans/spring-beans.xsd
+              http://code.alibabatech.com/schema/dubbo
+              http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+              http://www.springframework.org/schema/security
+              http://www.springframework.org/schema/security/spring-security.xsd">
+    <!-- 配置 favicon.ico不进行安全拦截-->
+    <http pattern="/favicon.ico" security="none"/>
+    <http pattern="/*.html" security="none"></http>
+<!--    <http pattern="/register.html" security="none"></http>-->
+    <http pattern="/css/**" security="none"></http>
+    <http pattern="/img/**" security="none"></http>
+    <http pattern="/js/**" security="none"></http>
+    <http pattern="/plugins/**" security="none"></http>
+    <http pattern="/seller/add.do" security="none"></http>
+
+
+    <!-- 页面拦截规则 -->
+<!--    use-expressions 为是否使用 Spring 表达式语言（ SpEL ），默认为true ,如果开启，则拦截的配置应该写成以下形式-->
+    <http use-expressions="false">
+        <intercept-url pattern="/**" access="ROLE_SELLER" />
+        <form-login login-page="/shoplogin.html"
+                    default-target-url="/admin/index.html"
+                    always-use-default-target="true"
+                    authentication-failure-url="/shoplogin.html"/>
+
+        <logout logout-url="" logout-success-url="/shoplogin.html"/>
+
+<!--        关闭跨站攻击-->
+        <csrf disabled="true"></csrf>
+<!--如果你在系统中使用了框架页，需要设置框架页的策略为SAMEORIGIN-->
+        <headers>
+<!--            SAMEORIGIN：frame页面的地址只能为同源域名下的页面-->
+            <frame-options policy="SAMEORIGIN"/>
+        </headers>
+    </http>
+
+    <!-- 认证管理器 -->
+    <authentication-manager>
+<!--        使用自动以认证类来认证登陆的账号-->
+        <authentication-provider user-service-ref="userDetailsService">
+<!--            加密配置-->
+            <password-encoder ref="bCryptPasswordEncoder"></password-encoder>
+<!--            <user-service>-->
+<!--&lt;!&ndash;                <user name="admin" password="123456" authorities="ROLE_USER"/>&ndash;&gt;-->
+<!--                -->
+<!--            </user-service>-->
+        </authentication-provider>
+    </authentication-manager>
+
+<!--    声明BCrypt加密配置-->
+    <beans:bean id="bCryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"></beans:bean>
+
+    <!-- 引用dubbo 服务 -->
+<!--    因为用到了认证类SellerService-->
+    <dubbo:application name="dongyimai-shop-web" />
+    <dubbo:registry address="zookeeper://192.168.188.128:2181"/>
+    <dubbo:reference id="sellerService" interface="com.offcn.sellergoods.service.SellerService"/>
+
+<!--    声明认证类-->
+    <beans:bean id="userDetailsService" class="com.offcn.service.UserDetailsServiceImpl">
+        <beans:property name="sellerService" ref="sellerService"></beans:property>
+    </beans:bean>
+</beans:beans>

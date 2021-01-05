@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="dongyimai-content-service" />
+        <module name="dongyimai-solr-util" />
+        <module name="dongyimai-page-interface" />
+        <module name="dongyimai-page-service" />
+        <module name="dongyimai-cart-service" />
+        <module name="dongyimai-mail-service" />
+        <module name="dongyimai-search-interface" />
+        <module name="dongyimai-sellergoods-service" />
+        <module name="dongyimai-seckill-web" />
+        <module name="dongyimai-pay-interface" />
+        <module name="dongyimai-pay-service" />
+        <module name="dongyimai-user-interface" />
+        <module name="dongyimai-pojo" />
+        <module name="dongyimai-seckill-service" />
+        <module name="dongyimai-sellergoods-interface" />
+        <module name="dongyimai-order-service" />
+        <module name="dongyimai-shop-web" />
+        <module name="dongyimai-portal-web" />
+        <module name="dongyimai-search-web" />
+        <module name="dongyimai-manager-web" />
+        <module name="dongyimai-page-web" />
+        <module name="dongyimai-seckill-interface" />
+        <module name="dongyimai-dao" />
+        <module name="dongyimai-order-interface" />
+        <module name="dongyimai-cart-web" />
+        <module name="dongyimai-common" />
+        <module name="dongyimai-search-service" />
+        <module name="dongyimai-user-web" />
+        <module name="dongyimai-content-interface" />
+        <module name="dongyimai-cart-interface" />
+        <module name="dongyimai-sms-service" />
+        <module name="dongyimai-user-service" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="dongyimai-mail-interface" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

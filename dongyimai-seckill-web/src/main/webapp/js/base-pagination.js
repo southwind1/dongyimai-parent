@@ -1,0 +1,1 @@
+var app = angular.module("dongyimai",["pagination"]);//定义一个叫myapp的模块,增加分页插件

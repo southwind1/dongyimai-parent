@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:component-scan base-package="com.offcn"></context:component-scan>
+     <context:property-placeholder location="classpath*:properties/*.properties"></context:property-placeholder>
+<!--    创建一个链接工厂，有jms服务厂商提供-->
+    <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+<!--        配置地址-->
+        <property name="brokerURL" value="tcp://192.168.188.146:61616"></property>
+    </bean>
+<!--     目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory-->
+    <bean id="connectionFactory" class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory" ref="activeMQConnectionFactory"></property>
+    </bean>
+
+    <!--    Spring提供的JMS工具类，它可以进行消息发送、接收等-->
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <!--        这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象-->
+        <property name="connectionFactory" ref="connectionFactory"></property>
+    </bean>
+    <!--这个是队列目的地，  -->
+    <bean id="smsDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="dongyimai_queue_sms"/>
+    </bean>
+
+    <!--    配置我饿监听类-->
+    <bean id="smsListener" class="com.offcn.listener.smsListener"></bean>
+
+<!--        创建一个监听器-->
+    <bean id="messageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+        <!-- 连接工厂-->
+        <property name="connectionFactory" ref="connectionFactory"/>
+        <!-- 设置要监听的目标队列-->
+        <property name="destination" ref="smsDestination"/>
+        <!-- 设置监听处理类-->
+        <property name="messageListener" ref="smsListener"/>
+    </bean>
+
+</beans>

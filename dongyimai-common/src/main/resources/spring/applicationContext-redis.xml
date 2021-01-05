@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<!--        加载属性配置文件，因为dao层引用了properties所以不用反复引用，不然会报错-->
+<!--   <context:property-placeholder location="classpath*:properties/*.properties"></context:property-placeholder>-->
+    <!-- redis数据源 -->
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <!-- 最大空闲数 -->
+        <property name="maxIdle" value="${redis.maxIdle}" />
+        <!-- 最大空连接数 -->
+<!--        <property name="maxTotal" value="${redis.maxTotal}" />-->
+        <!-- 最大等待时间 -->
+        <property name="maxWaitMillis" value="${redis.maxWait}" />
+        <!-- 返回连接时，检测连接是否成功 testOnBorrow：在提取一个jedis实例时，是否提前进行验证操作；如果为true，则得到的jedis -->
+        <property name="testOnBorrow" value="${redis.testOnBorrow}" />
+    </bean>
+    <!-- Spring-redis连接池管理工厂 -->
+    <bean id="jedisConnectionFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+        <!-- IP地址 -->
+        <property name="hostName" value="${redis.host}" />
+        <!-- 端口号 -->
+        <property name="port" value="${redis.port}" />
+        <property name="password" value="${redis.pass}" />
+        <!-- 超时时间 默认2000-->
+<!--        <property name="timeout" value="${redis.timeout}" />-->
+        <!-- 连接池配置引用 -->
+       <property name="poolConfig" ref="poolConfig"></property>
+        <!-- usePool：是否使用连接池 -->
+<!--        <property name="usePool" value="true"/>-->
+    </bean>
+    <!-- redis template definition -->
+    <bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate">
+        <property name="connectionFactory" ref="jedisConnectionFactory"></property>
+
+    </bean>
+</beans>
